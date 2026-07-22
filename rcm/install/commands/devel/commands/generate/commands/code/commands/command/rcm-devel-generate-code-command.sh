@@ -79,12 +79,12 @@ for each in "${arg[@]}";do
         current_line="$each"
         arg_string+="$each"
     else
-        _current_line="${current_line},${each}"
+        _current_line="${current_line} ${each}"
         if [ "${#_current_line}" -le $min ];then
-            current_line+=",${each}"
-            arg_string+=",${each}"
+            current_line+=" ${each}"
+            arg_string+=" ${each}"
         elif [ "${#_current_line}" -le $max ];then
-            arg_string+=",${each}"$'\n'
+            arg_string+=" ${each}"$'\n'
             current_line=
         else
             arg_string+=$'\n'"${each}"
@@ -93,8 +93,9 @@ for each in "${arg[@]}";do
     fi
 done
 code 'arg_string="'"$arg_string"'"'
+code 'RCM_LIB="'"$RCM_LIB"'"'
 RCM_PREFIX="$RCM_LIB"
-code 'RCM_PREFIX="'"$RCM_PREFIX"'"'
+
 # Jika current directory terdapat direktori rcm/install, maka diasumsikan kita
 # berada di repository extension nya rcm.
 # Contoh: $PWD = /home/ijortengab/github.com/ijortengab/ispconfig-autoinstaller
@@ -107,9 +108,14 @@ if [ -d "$PWD/rcm/install" ];then
     RCM_PREFIX="$PWD/rcm/install"
     git_repo=1
 fi
+code 'RCM_REPOSITORY="'"$RCM_REPOSITORY"'"'
 code 'RCM_PREFIX="'"$RCM_PREFIX"'"'
 ____
 
+code cd '      ' "$RCM_PREFIX"
+echo cd '      ' "$RCM_PREFIX"
+
+RCM_PREFIX=
 script=rcm
 script_alias=rcm
 for each in "${arg[@]}"; do
@@ -119,6 +125,8 @@ for each in "${arg[@]}"; do
     shift
 done
 script+=.sh
+# Trim leading slash.
+RCM_PREFIX=${RCM_PREFIX:1}
 
 code mkdir -p '' "$RCM_PREFIX"
 echo mkdir -p '' "$RCM_PREFIX"
@@ -132,11 +140,11 @@ echo mkdir -p '' "$RCM_LIB/shortcut-command"
 code cd '      ' "$RCM_LIB/shortcut-command"
 echo cd '      ' "$RCM_LIB/shortcut-command"
 if [ -n "$git_repo" ];then
-    code ln -sf '  ' '..'${RCM_PREFIX#${RCM_REPOSITORY}}/${script} ${script_alias}
-    echo ln -sf '  ' '..'${RCM_PREFIX#${RCM_REPOSITORY}}/${script} ${script_alias}
+    code ln -sf '  ' ${RCM_REPOSITORY}/${RCM_PREFIX}/${script} ${script_alias}
+    echo ln -sf '  ' ${RCM_REPOSITORY}/${RCM_PREFIX}/${script} ${script_alias}
 else
-    code ln -sf '  ' '..'${RCM_PREFIX#${RCM_LIB}}/${script} ${script_alias}
-    echo ln -sf '  ' '..'${RCM_PREFIX#${RCM_LIB}}/${script} ${script_alias}
+    code ln -sf '  ' '..'/${RCM_PREFIX#${RCM_LIB}}/${script} ${script_alias}
+    echo ln -sf '  ' '..'/${RCM_PREFIX#${RCM_LIB}}/${script} ${script_alias}
 fi
 
 # Wajib exit 0 jika success.
