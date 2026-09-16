@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Define variables and constants.
 RCM_EXTENSION_VERSION=0.1.0-alpha.1
 
 # Usage Functions.
@@ -48,13 +49,9 @@ done
 set -- "${_new_arguments[@]}"
 unset _new_arguments
 
-# Define variables and constants.
-
 # Help and Version.
 [ -n "$help" ] && { usage; exit 0; }
 [ -n "$version" ] && { e $RCM_EXTENSION_VERSION; x; }
-
-# Require.
 
 # ------------------------------------------------------------------------------
 
