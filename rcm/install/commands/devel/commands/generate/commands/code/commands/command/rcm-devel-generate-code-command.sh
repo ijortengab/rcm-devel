@@ -104,6 +104,11 @@ if [ -d "$PWD/rcm/install" ];then
     RCM_REPOSITORY="$PWD/rcm/install"
     RCM_PREFIX="$PWD/rcm/install"
     git_repo=1
+elif [ -d "$PWD/install/commands" ];then
+    # Ini artinya kita berada di repository rcm.
+    RCM_REPOSITORY="$PWD/install"
+    RCM_PREFIX="$PWD/install"
+    git_repo=1
 fi
 code 'RCM_REPOSITORY="'"$RCM_REPOSITORY"'"'
 code 'RCM_PREFIX="'"$RCM_PREFIX"'"'
